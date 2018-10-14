@@ -20,7 +20,7 @@ ImageProcessing::ImageProcessing(QWidget *parent)
 
 	ui.setupUi(this);
 
-	setWindowTitle("ImageProcessing V1.0");
+	setWindowTitle("Image Processing V1.0");
 	setWindowIcon(QIcon(":Icons/Image/icon/ImageProcessing.png"));
 
 	CreateMenuToolbar();
