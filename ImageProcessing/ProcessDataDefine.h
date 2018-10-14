@@ -1,0 +1,8 @@
+#pragma once
+
+enum IMG_SOURCE_TYPE
+{
+	IMG_SOURCE_IMGS,
+	IMG_SOURCE_VIDEO,
+	IMG_SOURCE_RTMP
+};

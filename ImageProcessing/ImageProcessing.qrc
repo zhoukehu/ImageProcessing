@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/ImageProcessing"/>
+    <qresource prefix="/MenuImages">
+        <file>Image/menu/FileOpen.png</file>
+        <file>Image/menu/GaussianBlur.png</file>
+        <file>Image/menu/MedianFiltering.png</file>
+        <file>Image/menu/LinearTransformation.png</file>
+        <file>Image/menu/PlatformHistogram.png</file>
+        <file>Image/menu/Backward.png</file>
+        <file>Image/menu/First.png</file>
+        <file>Image/menu/Forward.png</file>
+        <file>Image/menu/Play.png</file>
+        <file>Image/menu/Stop.png</file>
+        <file>Image/menu/Last.png</file>
+        <file>Image/menu/FullSpread.png</file>
+        <file>Image/menu/ImgAutoSpread.png</file>
+        <file>Image/menu/WndAutoSpread.png</file>
+        <file>Image/menu/ZoomIn.png</file>
+        <file>Image/menu/ZoomOut.png</file>
+        <file>Image/menu/NoScale.png</file>
+        <file>Image/menu/Enhance.png</file>
+        <file>Image/menu/PreProcess.png</file>
+    </qresource>
+    <qresource prefix="/Icons">
+        <file>Image/icon/ImageProcessing.png</file>
+    </qresource>
+    <qresource prefix="/datavisualization">
+        <file>Image/map/mountain.png</file>
+    </qresource>
+</RCC>
