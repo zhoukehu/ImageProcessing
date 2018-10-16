@@ -1,10 +1,8 @@
 ﻿#include "ImageProcessing.h"
 #pragma execution_character_set("utf-8")
 
-ImageProcessing::ImageProcessing(QWidget *parent)
-	: QMainWindow(parent)
+ImageProcessing::ImageProcessing()
 {
-	m_dockImgShow = NULL;
 	m_dockImgList = NULL;
 	m_dockGodView = NULL;
 	m_dockLog = NULL;
@@ -12,15 +10,9 @@ ImageProcessing::ImageProcessing(QWidget *parent)
 	m_dockImg3D = NULL;
 	m_dockImg2D = NULL;
 
-	m_ImgShowScrollArea = NULL;
-
-	m_labelImgShow = NULL;
 	m_listImgList = NULL;
-	m_pImgShow = NULL;
 
-	ui.setupUi(this);
-
-	setWindowTitle("ImageProcessing V1.0");
+	setWindowTitle(tr("ImageProcessing V1.0"));
 	setWindowIcon(QIcon(":Icons/Image/icon/ImageProcessing.png"));
 
 	CreateMenuToolbar();
@@ -30,8 +22,9 @@ ImageProcessing::ImageProcessing(QWidget *parent)
 	resize(QSize(width, height));
 	centralWidget();
 
+	loadFile("C:/Users/zhoukehu/Desktop/8c547ed98d1001e9852ca33db50e7bec54e7970c.jpg");
+
 	CreateDockPanes();
-	InitDockImgShow();
 	InitDockImgList();
 	InitDockImg3D();
 	InitDockImg2D();
@@ -144,14 +137,14 @@ void ImageProcessing::CreateMenuToolbar()
 
 
 	//窗口自带的工具栏
-	ui.mainToolBar->setWindowTitle(tr("主工具栏"));
-	ui.mainToolBar->addAction(openFile);
-	ui.mainToolBar->addSeparator();
-	ui.mainToolBar->addAction(firstFrame);
-	ui.mainToolBar->addAction(backwardFrame);
-	ui.mainToolBar->addAction(playCtrl);
-	ui.mainToolBar->addAction(forwardFrame);
-	ui.mainToolBar->addAction(lastFrame);
+	//ui.mainToolBar->setWindowTitle(tr("主工具栏"));
+	//ui.mainToolBar->addAction(openFile);
+	//ui.mainToolBar->addSeparator();
+	//ui.mainToolBar->addAction(firstFrame);
+	//ui.mainToolBar->addAction(backwardFrame);
+	//ui.mainToolBar->addAction(playCtrl);
+	//ui.mainToolBar->addAction(forwardFrame);
+	//ui.mainToolBar->addAction(lastFrame);
 	
 
 	//图像处理工具栏
@@ -209,7 +202,7 @@ void ImageProcessing::on_openFile()
 					str.sprintf("%d", i);
 					m_listImgList->setItem(i, 0, new QTableWidgetItem(str));
 				}
-				m_pImgShow->load(m_MainProcess.m_ImgNameList[0]);
+				m_ImgShow.load(m_MainProcess.m_ImgNameList[0]);
 				m_MainProcess.m_SourceType = IMG_SOURCE_IMGS;
 				DrawFrame();
 			}
@@ -260,25 +253,23 @@ void ImageProcessing::on_gaussianBlur()
 
 void ImageProcessing::on_imgshowFullSpread()
 {
-	QImage Img = m_labelImgShow->pixmap()->toImage().scaled(m_ImgShowScrollArea->width() - 2, m_ImgShowScrollArea->height() - 2, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	m_pImgShow = new QImage(Img);
-	DrawFrame();
+
 }
 void ImageProcessing::on_imgshowImgAutoSpread()
 {
-	QImage Img;
-	double ImgRatio = 1.0 * m_labelImgShow->pixmap()->toImage().width() / m_labelImgShow->pixmap()->toImage().height();
-	double WinRatio = 1.0 * (m_ImgShowScrollArea->width() - 2) / (m_ImgShowScrollArea->height() - 2); 
-	if (ImgRatio > WinRatio)       
-	{
-		Img = m_labelImgShow->pixmap()->toImage().scaled((m_ImgShowScrollArea->width() - 2), (m_ImgShowScrollArea->width() - 2) / ImgRatio, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	}
-	else                           
-	{
-		Img = m_labelImgShow->pixmap()->toImage().scaled((m_ImgShowScrollArea->height() - 2) * ImgRatio, (m_ImgShowScrollArea->height() - 2), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-	}
-	m_pImgShow = new QImage(Img);
-	DrawFrame();
+	//QImage Img;
+	//double ImgRatio = 1.0 * m_labelImgShow->pixmap()->toImage().width() / m_labelImgShow->pixmap()->toImage().height();
+	//double WinRatio = 1.0 * (m_ImgShowScrollArea->width() - 2) / (m_ImgShowScrollArea->height() - 2); 
+	//if (ImgRatio > WinRatio)       
+	//{
+	//	Img = m_labelImgShow->pixmap()->toImage().scaled((m_ImgShowScrollArea->width() - 2), (m_ImgShowScrollArea->width() - 2) / ImgRatio, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	//}
+	//else                           
+	//{
+	//	Img = m_labelImgShow->pixmap()->toImage().scaled((m_ImgShowScrollArea->height() - 2) * ImgRatio, (m_ImgShowScrollArea->height() - 2), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+	//}
+	//m_pImgShow = new QImage(Img);
+	//DrawFrame();
 }
 void ImageProcessing::on_imgshowWndAutoSpread()
 {
@@ -308,11 +299,6 @@ void ImageProcessing::on_platformHistogram()
 }
 void ImageProcessing::CreateDockPanes()
 {
-	QWidget* p = takeCentralWidget();   //删除中央窗体
-	if (p) 	delete p;
-	setDockNestingEnabled(true);        //允许嵌套dock
-
-	m_dockImgShow = new QDockWidget(tr("图像"), this);
 	m_dockImgList = new QDockWidget(tr("列表"), this);
 	m_dockGodView = new QDockWidget(tr("地图"), this);
 	m_dockLog = new QDockWidget(tr("日志"),this);
@@ -320,7 +306,6 @@ void ImageProcessing::CreateDockPanes()
 	m_dockImg3D = new QDockWidget(tr("3D"), this);
 	m_dockImg2D = new QDockWidget(tr("2D"), this);
 
-	m_dockImgShow->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 	m_dockImgList->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 	m_dockGodView->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 	m_dockLog->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
@@ -336,22 +321,19 @@ void ImageProcessing::CreateDockPanes()
 	//m_dockImg3D->setFixedWidth(400);
 	//m_dockImgList->setFixedWidth(200);
 
-	m_dockImgShow->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	m_dockImgList->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	m_dockGodView->setAllowedAreas(Qt::AllDockWidgetAreas);
 	m_dockAreaInfo->setAllowedAreas(Qt::AllDockWidgetAreas);
 	m_dockImg3D->setAllowedAreas(Qt::AllDockWidgetAreas);
 	m_dockImg2D->setAllowedAreas(Qt::AllDockWidgetAreas);
 
-	setCentralWidget(m_dockImgShow);
 	addDockWidget(Qt::LeftDockWidgetArea, m_dockImgList);
 	addDockWidget(Qt::RightDockWidgetArea, m_dockGodView);
 	addDockWidget(Qt::RightDockWidgetArea, m_dockLog);
 	addDockWidget(Qt::RightDockWidgetArea, m_dockAreaInfo);
 	addDockWidget(Qt::RightDockWidgetArea, m_dockImg3D);
 	addDockWidget(Qt::RightDockWidgetArea, m_dockImg2D);
-
-	splitDockWidget(m_dockImgList, m_dockImgShow, Qt::Horizontal);  
+ 
 	splitDockWidget(m_dockGodView, m_dockAreaInfo, Qt::Vertical);    
 
 	tabifyDockWidget(m_dockAreaInfo, m_dockImg3D);
@@ -361,34 +343,6 @@ void ImageProcessing::CreateDockPanes()
 	m_dockAreaInfo->raise();
 	m_dockGodView->raise();
 
-}
-void ImageProcessing::InitDockImgShow()        //初始化图像显示窗口
-{
-	m_labelImgShow = new QLabel(m_dockImgShow);
-	m_labelImgShow->setScaledContents(true);  
-	m_labelImgShow->installEventFilter(this);
-
-	int width = 500;
-	int height = 500;
-
-	Mat temp(width, height, CV_8UC3);
-	temp(Rect(0, 0,248, 248)).setTo(Scalar(8,163,238));
-	temp(Rect(0, 252, 248, 248)).setTo(Scalar(241, 80, 31));
-	temp(Rect(252, 0, 248, 248)).setTo(Scalar(255, 184, 2));
-	temp(Rect(252,252, 248, 248)).setTo(Scalar(126, 185, 2));
-	cvtColor(temp, temp, COLOR_RGB2BGR);
-
-	QImage qimg=Mat2QImage(temp);
-
-	m_pImgShow = new QImage(qimg);
-//	m_pImgShow->fill(qRgb(0, 0, 0));
-	DrawFrame();
-
-	m_ImgShowScrollArea = new QScrollArea(this);
-	m_ImgShowScrollArea->setBackgroundRole(QPalette::Dark);
-	m_ImgShowScrollArea->setAlignment(Qt::AlignCenter);
-	m_ImgShowScrollArea->setWidget(m_labelImgShow);
-	m_dockImgShow->setWidget(m_ImgShowScrollArea);
 }
 
 void ImageProcessing::InitDockImgList()    //初始化图像列表窗口
@@ -577,18 +531,17 @@ void ImageProcessing::InitDockImg2D()
 
 void ImageProcessing::DrawFrame()
 {
-	if (!m_pImgShow)
+	if (m_ImgShow.isNull())
 	{
 		return;
 	}
 
-	m_labelImgShow->setPixmap(QPixmap::fromImage(*m_pImgShow));
-	m_labelImgShow->resize(m_pImgShow->width(), m_pImgShow->height());
+	setImage(m_ImgShow);
 }
 
 void ImageProcessing::on_imglistLClicked(int row,int col)
 {
-	m_pImgShow->load(m_MainProcess.m_ImgNameList[row]);
+	m_ImgShow.load(m_MainProcess.m_ImgNameList[row]);
 	DrawFrame();
 }
 
@@ -614,7 +567,7 @@ bool ImageProcessing::eventFilter(QObject* obj, QEvent* event)
 				if (count > 0)
 				{
 					int row = m_listImgList->row(items.at(0));
-					m_pImgShow->load(m_MainProcess.m_ImgNameList[row]);
+					m_ImgShow.load(m_MainProcess.m_ImgNameList[row]);
 					DrawFrame();
 				}
 			}
@@ -622,26 +575,26 @@ bool ImageProcessing::eventFilter(QObject* obj, QEvent* event)
 		}
 	}
 
-	if (obj == m_labelImgShow)
-	{
-		switch (event->type())
-		{
-		case QEvent::MouseMove:
-		{
-			QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-			qDebug("%d %d", mouseEvent->pos().x(), mouseEvent->pos().y());
-			break;
-		}
-		case QEvent::MouseButtonPress:
-		{
-			QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
-			qDebug("%d %d", mouseEvent->pos().x(), mouseEvent->pos().y());
-			break;
-		}
-		default:
-			break;
-		}
-	}
+	//if (obj == m_labelImgShow)
+	//{
+	//	switch (event->type())
+	//	{
+	//	case QEvent::MouseMove:
+	//	{
+	//		QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+	//		qDebug("%d %d", mouseEvent->pos().x(), mouseEvent->pos().y());
+	//		break;
+	//	}
+	//	case QEvent::MouseButtonPress:
+	//	{
+	//		QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+	//		qDebug("%d %d", mouseEvent->pos().x(), mouseEvent->pos().y());
+	//		break;
+	//	}
+	//	default:
+	//		break;
+	//	}
+	//}
 
 	return QWidget::eventFilter(obj,event);
 }
@@ -649,7 +602,7 @@ bool ImageProcessing::eventFilter(QObject* obj, QEvent* event)
 
 void ImageProcessing::on_refreshFrame(const Mat frame)
 {
-	m_pImgShow=new QImage(Mat2QImage(frame));
+	m_ImgShow=Mat2QImage(frame);
 	DrawFrame();
 }
 

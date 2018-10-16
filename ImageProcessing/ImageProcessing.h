@@ -12,22 +12,21 @@
 #include "MainProcess.h"
 #include "surfacegraph.h"
 #include "customchart.h"
+#include "imageviewer.h"
 
-class ImageProcessing : public QMainWindow
+class ImageProcessing :public ImageViewer
 {
 	Q_OBJECT
 
 public:
-	ImageProcessing(QWidget *parent = Q_NULLPTR);
+	ImageProcessing();
 	void CreateMenuToolbar();
 	void CreateDockPanes();
-	void InitDockImgShow();
 	void InitDockImgList();
 	void InitDockImg3D();
 	void InitDockImg2D();
 	void DrawFrame();
 public:
-	QDockWidget* m_dockImgShow;
 	QDockWidget* m_dockImgList;
 	QDockWidget* m_dockGodView;
 	QDockWidget* m_dockLog;
@@ -35,11 +34,8 @@ public:
 	QDockWidget* m_dockImg3D;
 	QDockWidget* m_dockImg2D;
 
-	QLabel* m_labelImgShow;
 	QTableWidget * m_listImgList;
-	QImage* m_pImgShow;
-
-	QScrollArea* m_ImgShowScrollArea;
+	QImage m_ImgShow;
 public:
 	MainProcess m_MainProcess;
 private slots:
@@ -47,8 +43,7 @@ private slots:
 
 protected:
 	bool eventFilter(QObject* obj,QEvent* event);
-private:
-	Ui::ImageProcessingClass ui;
+
 private slots:
 	void on_openFile();
 
